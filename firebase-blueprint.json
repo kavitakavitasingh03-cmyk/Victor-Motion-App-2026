@@ -1,0 +1,220 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated creator profile and studio preferences for Victor Motion.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the studio user."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Creator display name shown in studio and shared presets."
+        },
+        "photoUrl": {
+          "type": "string",
+          "description": "Optional avatar URL."
+        },
+        "subscriptionTier": {
+          "type": "string",
+          "enum": ["free", "pro", "studio"],
+          "description": "Active creator membership tier."
+        },
+        "preferredExportQuality": {
+          "type": "string",
+          "enum": ["720p", "1080p", "2K", "4K"],
+          "description": "Default export resolution preference."
+        },
+        "preferredFps": {
+          "type": "integer",
+          "description": "Default export frame rate (30, 60, or 120)."
+        },
+        "cloudBackupEnabled": {
+          "type": "boolean",
+          "description": "Whether projects auto-backup to Firestore."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when profile was created (FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when profile was last updated (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": [
+        "userId",
+        "displayName",
+        "subscriptionTier",
+        "preferredExportQuality",
+        "preferredFps",
+        "cloudBackupEnabled",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "VideoProject": {
+      "title": "VideoProject",
+      "description": "Cloud-backed timeline project state including layers, keyframes, effects, audio tracks, and captions.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID."
+        },
+        "title": {
+          "type": "string",
+          "description": "Project title."
+        },
+        "aspectRatio": {
+          "type": "string",
+          "enum": ["9:16", "16:9", "1:1", "4:5"],
+          "description": "Canvas aspect ratio."
+        },
+        "resolution": {
+          "type": "string",
+          "enum": ["720p", "1080p", "2K", "4K"],
+          "description": "Target project export resolution."
+        },
+        "fps": {
+          "type": "integer",
+          "description": "Timeline frame rate (30, 60, or 120)."
+        },
+        "durationMs": {
+          "type": "integer",
+          "description": "Total timeline duration in milliseconds."
+        },
+        "layerCount": {
+          "type": "integer",
+          "description": "Total number of tracks/layers in the timeline."
+        },
+        "layersJson": {
+          "type": "string",
+          "description": "Serialized timeline layers, keyframes, curves, effects, and captions JSON."
+        },
+        "templateOriginId": {
+          "type": "string",
+          "description": "Optional template or preset ID used to initialize this project."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of project creation (FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of latest cloud backup (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": [
+        "userId",
+        "title",
+        "aspectRatio",
+        "resolution",
+        "fps",
+        "durationMs",
+        "layerCount",
+        "layersJson",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "CreatorPreset": {
+      "title": "CreatorPreset",
+      "description": "Shareable editing preset, velocity curve, cinematic grade, or transition package.",
+      "type": "object",
+      "properties": {
+        "authorId": {
+          "type": "string",
+          "description": "Creator Firebase Auth UID."
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Creator public display name."
+        },
+        "title": {
+          "type": "string",
+          "description": "Preset title."
+        },
+        "category": {
+          "type": "string",
+          "enum": ["Cinematic", "Velocity", "Transitions", "MotionFX", "TextAnim", "ColorGrade"],
+          "description": "Preset marketplace category."
+        },
+        "description": {
+          "type": "string",
+          "description": "Short summary of visual/motion behavior."
+        },
+        "isPublished": {
+          "type": "boolean",
+          "description": "Whether the preset is visible in the public community feed."
+        },
+        "isPremium": {
+          "type": "boolean",
+          "description": "Whether the preset is marked Pro/Marketplace."
+        },
+        "effectSummary": {
+          "type": "string",
+          "description": "Compact summary of included effects and curves."
+        },
+        "presetPayloadJson": {
+          "type": "string",
+          "description": "Serialized preset parameters (color grading, shake, glow, velocity curve)."
+        },
+        "likesCount": {
+          "type": "integer",
+          "description": "Community appreciation counter."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of preset creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of preset update."
+        }
+      },
+      "required": [
+        "authorId",
+        "authorName",
+        "title",
+        "category",
+        "description",
+        "isPublished",
+        "isPremium",
+        "effectSummary",
+        "presetPayloadJson",
+        "likesCount",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Private user studio profile and preferences."
+    },
+    "/users/{userId}/projects/{projectId}": {
+      "schema": {
+        "$ref": "#/entities/VideoProject"
+      },
+      "description": "User-owned cloud backups of Victor Motion video editing projects."
+    },
+    "/presets/{presetId}": {
+      "schema": {
+        "$ref": "#/entities/CreatorPreset"
+      },
+      "description": "User-created and community-shared motion, velocity, and cinematic presets."
+    }
+  }
+}

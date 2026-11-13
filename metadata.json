@@ -1,0 +1,6 @@
+{
+  "name": "Victor Motion",
+  "description": "All-in-one professional multi-layer mobile video editor with keyframe animation, visual effects, audio sync, templates, and AI editing tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
