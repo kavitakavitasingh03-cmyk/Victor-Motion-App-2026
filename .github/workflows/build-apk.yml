@@ -90,12 +90,13 @@ jobs:
           RELEASE_TAG="debug-apk-build-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
           RELEASE_TITLE="Debug APK Build #${GITHUB_RUN_NUMBER}"
           RELEASE_NOTES="Automatically generated debug APK build for testing purposes only. Not a Play Store production release."
-          RELEASE_URL=$(gh release create "$RELEASE_TAG" \
+          RAW_OUTPUT=$(gh release create "$RELEASE_TAG" \
             "app/build/outputs/apk/debug/app-debug.apk" \
             --target "$GITHUB_SHA" \
             --title "$RELEASE_TITLE" \
             --notes "$RELEASE_NOTES" \
             --latest)
+          RELEASE_URL=$(printf '%s\n' "$RAW_OUTPUT" | tail -n 1 | tr -d '\r')
           echo "release_url=$RELEASE_URL" >> "$GITHUB_OUTPUT"
 
       - name: Report Build and Release Status
